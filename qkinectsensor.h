@@ -1,0 +1,5 @@
+#ifndef QKINECTSENSOR
+#define QKINECTSENSOR
+
+#endif // QKINECTSENSOR
+
