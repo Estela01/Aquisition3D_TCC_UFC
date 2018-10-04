@@ -1,6 +1,5 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
 #include <QMainWindow>
 #include <QLabel>
 #include <QToolBar>
@@ -11,6 +10,11 @@
 #include <QComboBox>
 #include <QRadioButton>
 #include <QBoxLayout>
+#include <QMenuBar>
+#include <QStatusBar>
+#include "qkinectsensor.h"
+#include <QMdiArea>
+#include "rgbwindow.h"
 
 
 
@@ -26,12 +30,17 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
 
-private:
-    void newFile();
 
     void createActions();
     void createMenus();
+    void createRGBWindow();
+
+
+
+private:
+
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *formatMenu;
@@ -58,6 +67,17 @@ private:
     QAction *aboutAct;
     QAction *aboutQtAct;
     QLabel *infoLabel;
+    QKinectSensor *m_kinect;
+    QMdiArea *m_mdiArea;
+    RGBWindow *m_rgb;
+    RGBWindow *m_depth;
+
+public slots:
+    void newFile();
+    void initKinect();
+    void showSerialNumber();
+
+
 
 };
 

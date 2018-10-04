@@ -26,7 +26,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 CONFIG -= app_bundle
 
-
+QMAKE_CXXFLAGS += -std=c++11
 QMAKE_CXXFLAGS += -msse -msse2 -msse3
 macx:QMAKE_CXXFLAGS+= -arch x86_64
 macx:INCLUDEPATH+=/usr/local/boost/
@@ -36,19 +36,26 @@ linux-g++-64:QMAKE_CXXFLAGS +=  -march=native
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    Qkinect.cpp \
-    qrealsense.cpp
+    Qrealsense.cpp \
+    QKinectSensor.cpp \
+    rgbwindow.cpp
 
 HEADERS += \
         mainwindow.h \
-    qkinect.h \
-    qrealsense.h
+    qrealsense.h \
+    qkinectsensor.h \
+    rgbwindow.h
 
 INCLUDEPATH+=./include \
 /usr/local/include/libfreenect \
 /usr/local/include
 
+INCLUDEPATH += /usr/include/pcl-1.8
+
 LIBS += -L/usr/local/lib/ -lfreenect
+
+
+
 
 DEPENDPATH+=include
 # if we are on a mac define DARWIN
