@@ -71,11 +71,16 @@ private:
     QMdiArea *m_mdiArea;
     RGBWindow *m_rgb;
     RGBWindow *m_depth;
+    QToolBar *fToolbar;
 
 public slots:
     void newFile();
     void initKinect();
     void showSerialNumber();
+    void changeStatus();
+
+
+signals:
 
 
 

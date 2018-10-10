@@ -25,6 +25,65 @@ MainWindow::MainWindow(QWidget *parent) :
     QWidget *bottomFiller = new QWidget;
     bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
+    //Toolbar e Elementos
+
+
+//  int n_devices = m_kinect->getNumberDevices();
+    int n_devices = 3;
+    for (int i = 0; i < n_devices ; i++){
+        fToolbar = new QToolBar("Device Control", this);
+        fToolbar->setObjectName("Teste");
+        QLabel *label = new QLabel(fToolbar);
+        label -> setText("Kinect " + QString::number(i+1));
+        label-> setAlignment(Qt::AlignCenter);
+        label->setStyleSheet("font-weight: bold; color: black");
+        fToolbar->addWidget(label);
+        fToolbar->addSeparator();
+        label = new QLabel(fToolbar);
+        label -> setText("Dados");
+        label-> setAlignment(Qt::AlignCenter);
+        fToolbar->addWidget(label);
+
+        label = new QLabel(fToolbar);
+        label -> setText("Serial: ");
+        label-> setAlignment(Qt::AlignLeft);
+        fToolbar->addWidget(label);
+
+        label = new QLabel(fToolbar);
+        label -> setText("Modelo: ");
+        label-> setAlignment(Qt::AlignLeft);
+        fToolbar->addWidget(label);
+
+
+        label = new QLabel(fToolbar);
+        label -> setText("Angle: ");
+        label-> setAlignment(Qt::AlignLeft);
+        fToolbar->addWidget(label);
+
+
+        fToolbar->addSeparator();
+
+
+        QPushButton *rgbMode = new QPushButton("Visualizar RGB");
+        rgbMode-> setFlat(true);
+
+        //connect(rgbMode, SIGNAL(triggered()), this, [this]{ });
+
+        fToolbar->addWidget(rgbMode);
+        fToolbar->addSeparator();
+
+        this -> addToolBar(Qt::LeftToolBarArea,fToolbar);
+
+
+    }
+
+
+    QPushButton *capture = new QPushButton("Capture");
+
+    fToolbar->addWidget(capture);
+    this -> addToolBar(Qt::LeftToolBarArea,fToolbar);
+
+
 
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -46,27 +105,28 @@ MainWindow::MainWindow(QWidget *parent) :
     resize(480, 320);
 
     //Menu
-
     createActions();
     createMenus();
 
 
-    //Toolbar e Elementos
+
+
+
 
     //RGB Window/*
 
     m_mdiArea = new QMdiArea;
     setCentralWidget(m_mdiArea);
 
-    m_rgb= new RGBWindow(this);
-    m_rgb->setMode(0);
-    QMdiSubWindow *subWindow1 = new QMdiSubWindow;
-    subWindow1->setWidget(m_rgb);
-    subWindow1->setAttribute(Qt::WA_DeleteOnClose);
-    subWindow1->setWindowTitle("RGB Output");
-    subWindow1->resize(640,480);
-    m_mdiArea->addSubWindow(subWindow1);
-    subWindow1->show();
+//    m_rgb= new RGBWindow(this);
+//    m_rgb->setMode(0);
+//    QMdiSubWindow *subWindow1 = new QMdiSubWindow;
+//    subWindow1->setWidget(m_rgb);
+//    subWindow1->setAttribute(Qt::WA_DeleteOnClose);
+//    subWindow1->setWindowTitle("RGB Output");
+//    subWindow1->resize(640,480);
+//    m_mdiArea->addSubWindow(subWindow1);
+//    subWindow1->show();
 ////    /// create a window for our depth draw (1 = depth)
 ////    m_depth= new RGBWindow(this);
 ////    m_depth->setMode(1);
@@ -146,7 +206,6 @@ void MainWindow::initKinect(){
 //     infoLabel -> setText("Dispositivos Kinects encontrados" + QString::number(n_devides_kinect));
      statusBar() -> showMessage("Dispositivos Kinects encontrados" + QString::number(n_devides_kinect));
     // createRGBWindow();
-
      //showSerialNumber();
 
 }
@@ -159,56 +218,8 @@ void MainWindow::showSerialNumber(){
 
 }
 
-//Start: Change to Kinecct Class
-//Iniciar Kinect
+void MainWindow::changeStatus(){
+    statusBar()->showMessage("Visualizando RGB");
+    createRGBWindow();
 
-//void MainWindow::initKinect(){
-//    if (freenect_init(&m_ctx, NULL) < 0){
-//        qDebug()<<"freenect_init() failed\n";
-//        exit(EXIT_FAILURE);
-//    }
-//    freenect_set_log_level(m_ctx,FREENECT_LOG_DEBUG);
-//    int nr_devices = freenect_num_devices(m_ctx);
-//    qDebug()<<"numero de devices kinect found"<<nr_devices<<"\n";
-//    infoLabel->setText("Dispositivos Kinect encontrados: " +QString::number( nr_devices ));
-
-//    //Alocate the buffers
-//    m_userDeviceNumber = 0;
-
-
-////    if(freenect_open_device(m_ctx, &m_dev, m_userDeviceNumber) < 0){
-////        qDebug()<<"Não foi possivel abrir o dispositivo";
-////        exit(EXIT_FAILURE);
-
-////    }
-
-////    freenect_camera_to_world();
-
-
-//   // freenect_start_video(m_dev);
-
-////    //Descobrindo serial das cameras
-////    for(int i=0; i < nr_devices; i++){
-////        freenect_open_device(m_ctx, &m_dev, i);
-
-////    }
-
-
-
-//   int count  = freenect_list_device_attributes(m_ctx, &attribute_list);
-//   attribute_list->camera_serial;
-//   statusBar()->showMessage(attribute_list->camera_serial);
-
-//   qDebug()<<freenect_enabled_subdevices(m_ctx)<<" Dispositivos abertos.";
-//   freenect_open_device_by_camera_serial(m_ctx,&m_dev,"A00364A10850110A");
-//   qDebug()<<freenect_enabled_subdevices(m_ctx)<<" Dispositivos abertos apos open_device.";
-
-
-
-
-
-
-//}
-
-
-////End
+}
