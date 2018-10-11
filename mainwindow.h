@@ -36,6 +36,8 @@ protected:
     void createActions();
     void createMenus();
     void createRGBWindow();
+    void createRGBWindowForDevice(int indexDevice);
+
 
 
 
@@ -72,12 +74,14 @@ private:
     RGBWindow *m_rgb;
     RGBWindow *m_depth;
     QToolBar *fToolbar;
+    QComboBox *boxDevice;
+    QComboBox *boxDeviceDepth;
 
 public slots:
     void newFile();
     void initKinect();
     void showSerialNumber();
-    void changeStatus();
+    void changeStatus(int index);
 
 
 signals:

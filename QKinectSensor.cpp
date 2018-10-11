@@ -120,6 +120,62 @@ void QKinectSensor::init(){
 
 void QKinectSensor::showRGB(int index){
 
+
+
+
+    m_userDeviceNumber = index;
+//    m_bufferDepth.resize(FREENECT_RESOLUTION_MEDIUM);
+    m_bufferVideo.resize(FREENECT_VIDEO_RGB_SIZE);
+    m_bufferVideo.clear();
+
+
+    printf("teste");
+
+//    m_bufferVideo((freenect_find_video_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_VIDEO_RGB)).bytes);
+//     m_bufferDepthRaw.resize(FREENECT_FRAME_PIX);
+//     m_bufferDepthRaw16.resize(FREENECT_FRAME_PIX);
+    m_gamma.resize(2048);
+    /// open the device at present hard coded to device 0 as I only
+    /// have 1 kinect
+    /// \todo make this support multiple devices at some stage
+
+
+        if (freenect_open_device(m_ctx, &m_dev, index-1) < 0)
+        {
+        qDebug()<<"Could not open device\n";
+        return
+        exit(EXIT_FAILURE);
+        }
+
+
+        /// build the gamma table used for the depth to rgb conversion
+        /// taken from the demo programs
+        for (int i=0; i<2048; ++i)
+        {
+        float v = i/2048.0;
+        v = std::pow(v, 3)* 6;
+        m_gamma[i] = v*6*256;
+        }
+        /// init our flags
+        m_newRgbFrame=false;
+    //    m_newDepthFrame=false;
+        m_deviceActive=true;
+        // set our video formats to RGB by default
+        /// \todo make this more flexible at some stage
+        freenect_set_video_mode(m_dev, freenect_find_video_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_VIDEO_RGB));
+        //freenect_set_depth_mode(m_dev, freenect_find_depth_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_DEPTH_11BIT));
+        /// hook in the callbacks
+       // freenect_set_depth_callback(m_dev, depthCallback);
+        freenect_set_video_callback(m_dev, videoCallback);
+        // start the video and depth sub systems
+        startVideo();
+       // startDepth();
+        // set the thread to be active and start
+        m_process = new QKinectProcessEvents(m_ctx);
+        m_process->setActive();
+        m_process->start();
+
+
 }
 
 

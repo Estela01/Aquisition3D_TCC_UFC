@@ -27,6 +27,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Toolbar e Elementos
 
+    boxDevice = new QComboBox();
+    boxDevice->addItem("Nenhum", -1);
+
+    boxDeviceDepth = new QComboBox();
+    boxDeviceDepth->addItem("Nenhum", -1);
+
+
 
 //  int n_devices = m_kinect->getNumberDevices();
     int n_devices = 3;
@@ -41,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
         fToolbar->addSeparator();
         label = new QLabel(fToolbar);
         label -> setText("Dados");
-        label-> setAlignment(Qt::AlignCenter);
+        label-> setAlignment(Qt::AlignLeft);
         fToolbar->addWidget(label);
 
         label = new QLabel(fToolbar);
@@ -64,24 +71,62 @@ MainWindow::MainWindow(QWidget *parent) :
         fToolbar->addSeparator();
 
 
-        QPushButton *rgbMode = new QPushButton("Visualizar RGB");
-        rgbMode-> setFlat(true);
+//        QPushButton *rgbMode = new QPushButton("Visualizar RGB");
+//        rgbMode-> setFlat(true);
 
         //connect(rgbMode, SIGNAL(triggered()), this, [this]{ });
 
-        fToolbar->addWidget(rgbMode);
-        fToolbar->addSeparator();
+//        fToolbar->addWidget(rgbMode);
+        //fToolbar->addSeparator();
+
+
+
+
+        boxDevice->addItem("Kinect " + QString::number(i+1), i);
+        boxDeviceDepth->addItem("Kinect " + QString::number(i+1), i);
 
         this -> addToolBar(Qt::LeftToolBarArea,fToolbar);
 
 
     }
 
+   fToolbar = new QToolBar("Device Control", this);
+
+    QLabel *label = new QLabel(fToolbar);
+    label -> setText("Visualizar RGB");
+    label-> setAlignment(Qt::AlignLeft);
+    fToolbar->addWidget(label);
+    fToolbar->addWidget(boxDevice);
+    connect(boxDevice, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(changeStatus(int)));
+
+    fToolbar->addSeparator();
+
+    this -> addToolBar(Qt::LeftToolBarArea,fToolbar);
+
+
+
+
+    fToolbar = new QToolBar("Device Control", this);
+     label = new QLabel(fToolbar);
+     label -> setText("Visualizar Depth");
+     label-> setAlignment(Qt::AlignLeft);
+     fToolbar->addWidget(label);
+     fToolbar->addWidget(boxDeviceDepth);
+     connect(boxDeviceDepth, SIGNAL(currentIndexChanged(int)),
+             this, SLOT(changeStatus(int)));
+     fToolbar->addSeparator();
+
+
+
+
 
     QPushButton *capture = new QPushButton("Capture");
 
     fToolbar->addWidget(capture);
     this -> addToolBar(Qt::LeftToolBarArea,fToolbar);
+
+
 
 
 
@@ -182,7 +227,28 @@ void MainWindow::createRGBWindow(){
         QMdiSubWindow *subWindow1 = new QMdiSubWindow;
         subWindow1->setWidget(m_rgb);
         subWindow1->setAttribute(Qt::WA_DeleteOnClose);
-        subWindow1->setWindowTitle("Kinect: "+  QString::number(i+1)+" RGB Output");
+        subWindow1->setWindowTitle("Kinect: "+  QString::number(i)+" RGB Output");
+        subWindow1->resize(640,480);
+        m_mdiArea->addSubWindow(subWindow1);
+        subWindow1->show();
+        m_mdiArea->tileSubWindows();
+
+    }
+
+}
+
+void MainWindow::createRGBWindowForDevice(int indexDevice){
+
+    if (indexDevice - 1 < m_kinect->getNumberDevices()){
+
+        m_kinect->showRGB(indexDevice);
+
+        m_rgb= new RGBWindow(this);
+        m_rgb->setMode(0);
+        QMdiSubWindow *subWindow1 = new QMdiSubWindow;
+        subWindow1->setWidget(m_rgb);
+        subWindow1->setAttribute(Qt::WA_DeleteOnClose);
+        subWindow1->setWindowTitle("Kinect: "+  QString::number(indexDevice)+" RGB Output");
         subWindow1->resize(640,480);
         m_mdiArea->addSubWindow(subWindow1);
         subWindow1->show();
@@ -194,8 +260,8 @@ void MainWindow::createRGBWindow(){
 
 
 
-
 }
+
 
 void MainWindow::initKinect(){
 
@@ -218,8 +284,15 @@ void MainWindow::showSerialNumber(){
 
 }
 
-void MainWindow::changeStatus(){
-    statusBar()->showMessage("Visualizando RGB");
-    createRGBWindow();
+void MainWindow::changeStatus(int index){
+    qDebug()<<"index: "<<index;
+    if(index > 0){
+        m_mdiArea->closeAllSubWindows();
+       // freenect_close_device(m_kinect->m_dev);
+        statusBar()->showMessage("Visualizando RGB do kinect" + QString::number(index));
+        createRGBWindowForDevice(index);
+    }if(index == 0){
+        m_mdiArea->closeAllSubWindows();
+    }
 
 }

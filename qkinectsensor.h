@@ -44,6 +44,7 @@ public:
     int getNumberDevices();
     const char* getSerialNumber();
     void showRGB(int index);
+     freenect_device *m_dev;
 
 
 public slots:
@@ -66,7 +67,7 @@ private:
     void init();
 
     freenect_context *m_ctx;
-    freenect_device *m_dev;
+
     freenect_device_attributes *attribute_list;
     int m_userDeviceNumber;
     QMutex m_mutex;
