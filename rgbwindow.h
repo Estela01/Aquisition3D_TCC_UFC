@@ -57,6 +57,11 @@ public :
  inline void setMode(
             int _m
            ){m_mode=_m;}
+ inline void setIndexDevice(
+            int _d
+           ){m_devIndex=_d;}
+
+
 private :
  /// @brief the image data to draw put into a GL texture
  std::vector<uint8_t> m_rgb;
@@ -64,6 +69,7 @@ private :
  GLuint m_rgbTexture;
  /// @brief the draw mode we are using
  int m_mode;
+ int m_devIndex;
 
 
 protected:

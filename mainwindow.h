@@ -76,6 +76,7 @@ private:
     QToolBar *fToolbar;
     QComboBox *boxDevice;
     QComboBox *boxDeviceDepth;
+    int indexDeviceAnterior = -1;
 
 public slots:
     void newFile();

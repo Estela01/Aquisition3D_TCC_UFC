@@ -35,8 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-//  int n_devices = m_kinect->getNumberDevices();
-    int n_devices = 3;
+    int n_devices = m_kinect->getNumberDevices();
+    //int n_devices = 3;
     for (int i = 0; i < n_devices ; i++){
         fToolbar = new QToolBar("Device Control", this);
         fToolbar->setObjectName("Teste");
@@ -241,10 +241,11 @@ void MainWindow::createRGBWindowForDevice(int indexDevice){
 
     if (indexDevice - 1 < m_kinect->getNumberDevices()){
 
-        m_kinect->showRGB(indexDevice);
+        m_kinect->setDeviceToShowRGB(indexDevice);
 
         m_rgb= new RGBWindow(this);
         m_rgb->setMode(0);
+        m_rgb->setIndexDevice(indexDevice);
         QMdiSubWindow *subWindow1 = new QMdiSubWindow;
         subWindow1->setWidget(m_rgb);
         subWindow1->setAttribute(Qt::WA_DeleteOnClose);
@@ -286,13 +287,24 @@ void MainWindow::showSerialNumber(){
 
 void MainWindow::changeStatus(int index){
     qDebug()<<"index: "<<index;
+    qDebug()<<"index Anterior: "<<indexDeviceAnterior;
+
+    if (indexDeviceAnterior == -1){
+        indexDeviceAnterior = index;
+    } else {
+        if (indexDeviceAnterior != 0){
+            m_kinect->stopVideo(indexDeviceAnterior - 1);
+        }
+    }
+
     if(index > 0){
         m_mdiArea->closeAllSubWindows();
-       // freenect_close_device(m_kinect->m_dev);
         statusBar()->showMessage("Visualizando RGB do kinect" + QString::number(index));
         createRGBWindowForDevice(index);
     }if(index == 0){
+
         m_mdiArea->closeAllSubWindows();
     }
 
+    indexDeviceAnterior = index;
 }

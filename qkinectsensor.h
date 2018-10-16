@@ -43,8 +43,9 @@ public:
     static QKinectSensor* instace();
     int getNumberDevices();
     const char* getSerialNumber();
-    void showRGB(int index);
-     freenect_device *m_dev;
+    void setDeviceToShowRGB(int index);
+
+    std::vector<freenect_device*> m_dev;
 
 
 public slots:
@@ -53,8 +54,8 @@ public slots:
     void setVideoMode(int _mode);
     void startDepth();
     void stopDepth();
-    void startVideo();
-    void stopVideo();
+    void startVideo(int index);
+    void stopVideo(int index);
 
 private:
 

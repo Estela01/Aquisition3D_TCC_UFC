@@ -94,8 +94,6 @@ void RGBWindow::paintGL()
     {
         kinect->getRGB(m_rgb);
 
-
-
     }
     else if(m_mode == 1)
     {
