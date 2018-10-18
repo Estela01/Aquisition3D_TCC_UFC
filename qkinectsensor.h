@@ -50,10 +50,10 @@ public:
 
 public slots:
     bool getRGB(std::vector<uint8_t> &o_buffer);
-//    bool getDepth( std::vector<uint8_t> &o_buffer);
+    bool getDepth( std::vector<uint8_t> &o_buffer);
     void setVideoMode(int _mode);
-    void startDepth();
-    void stopDepth();
+    void startDepth(int index);
+    void stopDepth(int index);
     void startVideo(int index);
     void stopVideo(int index);
 
@@ -73,20 +73,22 @@ private:
     int m_userDeviceNumber;
     QMutex m_mutex;
     bool m_newRgbFrame;
-  //  bool m_newDepthFrame;
+    bool m_newDepthFrame;
+
     std::vector<uint8_t> m_bufferVideo;
-//    std::vector<uint8_t> m_bufferDepth;
-//    std::vector<uint8_t> m_bufferDepthRaw;
-//    std::vector<uint16_t> m_bufferDepthRaw16;
+    std::vector<uint8_t> m_bufferDepth;
+    std::vector<uint8_t> m_bufferDepthRaw;
+    std::vector<uint16_t> m_bufferDepthRaw16;
+
     std::vector<uint16_t> m_gamma;
     bool m_deviceActive;
-        QKinectProcessEvents *m_process;
-  //  void grabDepth( void *_depth,uint32_t timestamp );
+    QKinectProcessEvents *m_process;
+    void grabDepth( void *_depth,uint32_t timestamp );
     void grabVideo(void *_video,uint32_t timestamp );
-//    static inline void depthCallback(freenect_device *_dev, void *_depth, uint32_t _timestamp=0 ){
-//             QKinectSensor *kinect=QKinectSensor::instace();
-//             kinect->grabDepth(_depth,_timestamp);
-//         }
+    static inline void depthCallback(freenect_device *_dev, void *_depth, uint32_t _timestamp=0 ){
+             QKinectSensor *kinect=QKinectSensor::instace();
+             kinect->grabDepth(_depth,_timestamp);
+         }
 
    static inline void videoCallback(freenect_device *_dev, void *_video,  uint32_t _timestamp=0) {
              QKinectSensor *kinect=QKinectSensor::instace();

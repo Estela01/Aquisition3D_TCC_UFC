@@ -172,17 +172,17 @@ MainWindow::MainWindow(QWidget *parent) :
 //    subWindow1->resize(640,480);
 //    m_mdiArea->addSubWindow(subWindow1);
 //    subWindow1->show();
-////    /// create a window for our depth draw (1 = depth)
-////    m_depth= new RGBWindow(this);
-////    m_depth->setMode(1);
-////    QMdiSubWindow *subWindow2 = new QMdiSubWindow;
-////    subWindow2->setWidget(m_depth);
-////    subWindow2->setAttribute(Qt::WA_DeleteOnClose);
-////    subWindow2->setWindowTitle("Depth Output");
-////    subWindow2->resize(640,480);
-////    m_mdiArea->addSubWindow(subWindow2);
-////    subWindow2->show();
-    m_mdiArea->tileSubWindows();
+//    /// create a window for our depth draw (1 = depth)
+//    m_depth= new RGBWindow(this);
+//    m_depth->setMode(1);
+//    QMdiSubWindow *subWindow2 = new QMdiSubWindow;
+//    subWindow2->setWidget(m_depth);
+//    subWindow2->setAttribute(Qt::WA_DeleteOnClose);
+//    subWindow2->setWindowTitle("Depth Output");
+//    subWindow2->resize(640,480);
+//    m_mdiArea->addSubWindow(subWindow2);
+//    subWindow2->show();
+//    m_mdiArea->tileSubWindows();
 
 
 
@@ -231,7 +231,20 @@ void MainWindow::createRGBWindow(){
         subWindow1->resize(640,480);
         m_mdiArea->addSubWindow(subWindow1);
         subWindow1->show();
+
+
+        /// create a window for our depth draw (1 = depth)
+        m_depth= new RGBWindow(this);
+        m_depth->setMode(1);
+        QMdiSubWindow *subWindow2 = new QMdiSubWindow;
+        subWindow2->setWidget(m_depth);
+        subWindow2->setAttribute(Qt::WA_DeleteOnClose);
+        subWindow2->setWindowTitle("Depth Output");
+        subWindow2->resize(640,480);
+        m_mdiArea->addSubWindow(subWindow2);
+        subWindow2->show();
         m_mdiArea->tileSubWindows();
+
 
     }
 
@@ -253,6 +266,17 @@ void MainWindow::createRGBWindowForDevice(int indexDevice){
         subWindow1->resize(640,480);
         m_mdiArea->addSubWindow(subWindow1);
         subWindow1->show();
+
+        m_depth= new RGBWindow(this);
+        m_depth->setMode(1);
+        QMdiSubWindow *subWindow2 = new QMdiSubWindow;
+        subWindow2->setWidget(m_depth);
+        subWindow2->setAttribute(Qt::WA_DeleteOnClose);
+        subWindow2->setWindowTitle("Depth Output");
+        subWindow2->resize(640,480);
+        m_mdiArea->addSubWindow(subWindow2);
+        subWindow2->show();
+
         m_mdiArea->tileSubWindows();
 
 
@@ -294,6 +318,7 @@ void MainWindow::changeStatus(int index){
     } else {
         if (indexDeviceAnterior != 0){
             m_kinect->stopVideo(indexDeviceAnterior - 1);
+            m_kinect->stopDepth(indexDeviceAnterior - 1);
         }
     }
 
