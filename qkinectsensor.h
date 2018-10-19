@@ -50,7 +50,7 @@ public:
 
 public slots:
     bool getRGB(std::vector<uint8_t> &o_buffer);
-    bool getDepth( std::vector<uint8_t> &o_buffer);
+    bool getDepth( std::vector<uint16_t> &o_buffer);
     void setVideoMode(int _mode);
     void startDepth(int index);
     void stopDepth(int index);
@@ -76,7 +76,7 @@ private:
     bool m_newDepthFrame;
 
     std::vector<uint8_t> m_bufferVideo;
-    std::vector<uint8_t> m_bufferDepth;
+    std::vector<uint16_t> m_bufferDepth;
     std::vector<uint8_t> m_bufferDepthRaw;
     std::vector<uint16_t> m_bufferDepthRaw16;
 

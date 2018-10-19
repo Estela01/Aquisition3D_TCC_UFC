@@ -122,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     QPushButton *capture = new QPushButton("Capture");
+    connect(capture, SIGNAL(clicked()),this,SLOT(saveXYZKinect()));
 
     fToolbar->addWidget(capture);
     this -> addToolBar(Qt::LeftToolBarArea,fToolbar);
@@ -332,4 +333,8 @@ void MainWindow::changeStatus(int index){
     }
 
     indexDeviceAnterior = index;
+}
+
+void MainWindow::saveXYZKinect(){
+    m_depth->saveXYZ();
 }

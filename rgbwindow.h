@@ -60,16 +60,19 @@ public :
  inline void setIndexDevice(
             int _d
            ){m_devIndex=_d;}
+ void saveXYZ();
 
 
 private :
  /// @brief the image data to draw put into a GL texture
  std::vector<uint8_t> m_rgb;
+  std::vector<uint16_t> m_depth;
  /// @brief the texture object pointer
  GLuint m_rgbTexture;
  /// @brief the draw mode we are using
  int m_mode;
  int m_devIndex;
+ int count = 0;
 
 
 protected:
@@ -124,6 +127,7 @@ private :
   void timerEvent(
                     QTimerEvent *_event
                    );
+
 
 };
 

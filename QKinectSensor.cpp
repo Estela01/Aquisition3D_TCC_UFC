@@ -65,8 +65,10 @@ void QKinectSensor::init(){
     qDebug()<<"Number of devices found: "<<nr_devices<<"\n";
     /// now allocate the buffers so we can fill them
     m_userDeviceNumber = 0;
-    m_bufferDepth.resize(FREENECT_FRAME_PIX*3);
+    //m_bufferDepth.resize(FREENECT_FRAME_PIX);
+    m_bufferDepth.resize(FREENECT_FRAME_PIX);
     m_bufferVideo.resize(FREENECT_VIDEO_RGB_SIZE);
+
     m_bufferDepthRaw.resize(FREENECT_FRAME_PIX);
     m_bufferDepthRaw16.resize(FREENECT_FRAME_PIX);
     m_gamma.resize(2048);
@@ -103,7 +105,7 @@ void QKinectSensor::setDeviceToShowRGB(int index){
     // set our video formats to RGB by default
     /// \todo make this more flexible at some stage
     freenect_set_video_mode(m_dev[m_userDeviceNumber], freenect_find_video_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_VIDEO_RGB));
-    freenect_set_depth_mode(m_dev[m_userDeviceNumber], freenect_find_depth_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_DEPTH_11BIT));
+    freenect_set_depth_mode(m_dev[m_userDeviceNumber], freenect_find_depth_mode(FREENECT_RESOLUTION_MEDIUM, FREENECT_DEPTH_REGISTERED));
     /// hook in the callbacks
     freenect_set_depth_callback(m_dev[m_userDeviceNumber], depthCallback);
     freenect_set_video_callback(m_dev[m_userDeviceNumber], videoCallback);
@@ -139,7 +141,8 @@ bool QKinectSensor::getRGB(std::vector<uint8_t> &o_buffer)
 }
 
 
-bool QKinectSensor::getDepth(std::vector<uint8_t> &o_buffer)
+
+bool QKinectSensor::getDepth(std::vector<uint16_t> &o_buffer)
 {
     // this fills the depth buffer, first lock our mutex
     QMutexLocker locker( &m_mutex );
@@ -235,62 +238,65 @@ QMutexLocker locker( &m_mutex );
 // cast the void pointer to the unint16_t the data is actually in
 uint16_t* depth = static_cast<uint16_t*>(_depth);
 
-//TODO: PRECISA VER QUAL O VALOR MAXIMO PARA i
-// now loop and fill data buffers
-for( unsigned int i = 0 ; i < FREENECT_FRAME_H*FREENECT_FRAME_W ; ++i)
-{
-    // first our two raw buffers the first will lose precision and may well
-    // be removed in the next iterations
-    m_bufferDepthRaw[i]=depth[i];
-    m_bufferDepthRaw16[i]=depth[i];
+// fill data buffers with data
+    copy(depth, depth+ FREENECT_FRAME_PIX, m_bufferDepth.begin());
+    m_newDepthFrame = true;
 
-    // now get the index into the gamma table
-    int pval = m_gamma[depth[i]];
-    // get the lower bit
-    int lb = pval & 0xff;
-    // shift right by 8 and determine which colour value to fill the
-    // array with based on the position
-    switch (pval>>8)
-    {
-    case 0:
-        m_bufferDepth[3*i+0] = 255;
-        m_bufferDepth[3*i+1] = 255-lb;
-        m_bufferDepth[3*i+2] = 255-lb;
-        break;
-    case 1:
-        m_bufferDepth[3*i+0] = 255;
-        m_bufferDepth[3*i+1] = lb;
-        m_bufferDepth[3*i+2] = 0;
-        break;
-    case 2:
-        m_bufferDepth[3*i+0] = 255-lb;
-        m_bufferDepth[3*i+1] = 255;
-        m_bufferDepth[3*i+2] = 0;
-        break;
-    case 3:
-        m_bufferDepth[3*i+0] = 0;
-        m_bufferDepth[3*i+1] = 255;
-        m_bufferDepth[3*i+2] = lb;
-        break;
-    case 4:
-        m_bufferDepth[3*i+0] = 0;
-        m_bufferDepth[3*i+1] = 255-lb;
-        m_bufferDepth[3*i+2] = 255;
-        break;
-    case 5:
-        m_bufferDepth[3*i+0] = 0;
-        m_bufferDepth[3*i+1] = 0;
-        m_bufferDepth[3*i+2] = 255-lb;
-        break;
-    default:
-        m_bufferDepth[3*i+0] = 0;
-        m_bufferDepth[3*i+1] = 0;
-        m_bufferDepth[3*i+2] = 0;
-        break;
-    }
-}
-// flag we have a new frame
-m_newDepthFrame = true;
+//// now loop and fill data buffers
+//for( unsigned int i = 0 ; i < FREENECT_FRAME_H*FREENECT_FRAME_W ; ++i)
+//{
+//    // first our two raw buffers the first will lose precision and may well
+//    // be removed in the next iterations
+//    m_bufferDepthRaw[i]=depth[i];
+//    m_bufferDepthRaw16[i]=depth[i];
+
+//    // now get the index into the gamma table
+//    int pval = m_gamma[depth[i]];
+//    // get the lower bit
+//    int lb = pval & 0xff;
+//    // shift right by 8 and determine which colour value to fill the
+//    // array with based on the position
+//    switch (pval>>8)
+//    {
+//    case 0:
+//        m_bufferDepth[3*i+0] = 255;
+//        m_bufferDepth[3*i+1] = 255-lb;
+//        m_bufferDepth[3*i+2] = 255-lb;
+//        break;
+//    case 1:
+//        m_bufferDepth[3*i+0] = 255;
+//        m_bufferDepth[3*i+1] = lb;
+//        m_bufferDepth[3*i+2] = 0;
+//        break;
+//    case 2:
+//        m_bufferDepth[3*i+0] = 255-lb;
+//        m_bufferDepth[3*i+1] = 255;
+//        m_bufferDepth[3*i+2] = 0;
+//        break;
+//    case 3:
+//        m_bufferDepth[3*i+0] = 0;
+//        m_bufferDepth[3*i+1] = 255;
+//        m_bufferDepth[3*i+2] = lb;
+//        break;
+//    case 4:
+//        m_bufferDepth[3*i+0] = 0;
+//        m_bufferDepth[3*i+1] = 255-lb;
+//        m_bufferDepth[3*i+2] = 255;
+//        break;
+//    case 5:
+//        m_bufferDepth[3*i+0] = 0;
+//        m_bufferDepth[3*i+1] = 0;
+//        m_bufferDepth[3*i+2] = 255-lb;
+//        break;
+//    default:
+//        m_bufferDepth[3*i+0] = 0;
+//        m_bufferDepth[3*i+1] = 0;
+//        m_bufferDepth[3*i+2] = 0;
+//        break;
+//    }
+//}
+//// flag we have a new frame
+//m_newDepthFrame = true;
 }
 
 

@@ -83,6 +83,7 @@ public slots:
     void initKinect();
     void showSerialNumber();
     void changeStatus(int index);
+    void saveXYZKinect();
 
 
 signals:
