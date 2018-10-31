@@ -4,11 +4,19 @@
 #include <QAction>
 #include <QKeySequence>
 #include <QApplication>
+#include <chrono>  // chrono::system_clock
+#include <ctime>   // localtime
+#include <sstream> // stringstream
+#include <iomanip> // put_time
+#include <string>  // string
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     m_kinect = QKinectSensor::instace();
+    auto start = std::chrono::system_clock::now();
+
 
     //Layout
     QWidget *widget = new QWidget;
@@ -93,7 +101,7 @@ MainWindow::MainWindow(QWidget *parent) :
    fToolbar = new QToolBar("Device Control", this);
 
     QLabel *label = new QLabel(fToolbar);
-    label -> setText("Visualizar RGB");
+    label -> setText("Visualizar");
     label-> setAlignment(Qt::AlignLeft);
     fToolbar->addWidget(label);
     fToolbar->addWidget(boxDevice);
@@ -107,21 +115,22 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-    fToolbar = new QToolBar("Device Control", this);
-     label = new QLabel(fToolbar);
-     label -> setText("Visualizar Depth");
-     label-> setAlignment(Qt::AlignLeft);
-     fToolbar->addWidget(label);
-     fToolbar->addWidget(boxDeviceDepth);
-     connect(boxDeviceDepth, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(changeStatus(int)));
-     fToolbar->addSeparator();
+//    fToolbar = new QToolBar("Device Control", this);
+//     label = new QLabel(fToolbar);
+//     label -> setText("Visualizar Depth");
+//     label-> setAlignment(Qt::AlignLeft);
+//     fToolbar->addWidget(label);
+//     fToolbar->addWidget(boxDeviceDepth);
+//     connect(boxDeviceDepth, SIGNAL(currentIndexChanged(int)),
+//             this, SLOT(changeStatus(int)));
+//     fToolbar->addSeparator();
 
 
 
 
 
-    QPushButton *capture = new QPushButton("Capture");
+    capture = new QPushButton("Capture");
+    capture->setEnabled(0);
     connect(capture, SIGNAL(clicked()),this,SLOT(saveXYZKinect()));
 
     fToolbar->addWidget(capture);
@@ -223,6 +232,7 @@ void MainWindow::createRGBWindow(){
 
 
     for(int i = 0; i < n_devides_kinect;i++){
+
         m_rgb= new RGBWindow(this);
         m_rgb->setMode(0);
         QMdiSubWindow *subWindow1 = new QMdiSubWindow;
@@ -255,6 +265,8 @@ void MainWindow::createRGBWindowForDevice(int indexDevice){
 
     if (indexDevice - 1 < m_kinect->getNumberDevices()){
 
+
+
         m_kinect->setDeviceToShowRGB(indexDevice);
 
         m_rgb= new RGBWindow(this);
@@ -276,7 +288,7 @@ void MainWindow::createRGBWindowForDevice(int indexDevice){
         subWindow2->setWindowTitle("Depth Output");
         subWindow2->resize(640,480);
         m_mdiArea->addSubWindow(subWindow2);
-        subWindow2->show();
+        //subWindow2->show();
 
         m_mdiArea->tileSubWindows();
 
@@ -324,12 +336,17 @@ void MainWindow::changeStatus(int index){
     }
 
     if(index > 0){
+
         m_mdiArea->closeAllSubWindows();
+        capture->setEnabled(1);
         statusBar()->showMessage("Visualizando RGB do kinect" + QString::number(index));
         createRGBWindowForDevice(index);
+
     }if(index == 0){
 
         m_mdiArea->closeAllSubWindows();
+//        m_kinect->stopVideo(indexDeviceAnterior - 1);
+//        m_kinect->stopDepth(indexDeviceAnterior - 1);
     }
 
     indexDeviceAnterior = index;

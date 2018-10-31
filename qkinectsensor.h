@@ -59,6 +59,8 @@ public slots:
 
 private:
 
+
+
     static QKinectSensor* s_instace;
 
     QKinectSensor();
@@ -96,6 +98,7 @@ private:
          }
 
 };
+
 
 
 

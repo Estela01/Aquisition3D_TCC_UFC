@@ -77,6 +77,7 @@ private:
     QComboBox *boxDevice;
     QComboBox *boxDeviceDepth;
     int indexDeviceAnterior = -1;
+     QPushButton *capture;
 
 public slots:
     void newFile();

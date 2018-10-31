@@ -6,14 +6,33 @@
 #include<QBuffer>
 #include <iostream>
 #include <cstddef>
-
+//#include <chrono>
+#include <chrono>  // chrono::system_clock
+#include <ctime>   // localtime
+#include <sstream> // stringstream
+#include <iomanip> // put_time
+#include <string>  // string
+#include <iostream>
 #define FREENECT_FRAME_H 480
 #define FREENECT_FRAME_W 640
 #define FREENECT_FRAME_PIX (FREENECT_FRAME_H * FREENECT_FRAME_W)
 #define FREENECT_VIDEO_RGB_SIZE (FREENECT_FRAME_PIX *3)
 
+
+
+std::string return_current_time_and_date()
+{
+    auto now = std::chrono::system_clock::now();
+    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+    return ss.str();
+}
+
 QKinectSensor *QKinectSensor::s_instace = 0;
 
+auto start = std::chrono::system_clock::now();
 
 
 QKinectSensor* QKinectSensor::instace(){
@@ -38,17 +57,22 @@ int QKinectSensor::getNumberDevices(){
 const char* QKinectSensor::getSerialNumber(){
 
 
-    if(freenect_open_device(m_ctx, &m_dev[0], m_userDeviceNumber) < 0){
-        qDebug()<<"Não foi possivel abrir o dispositivo";
-       // exit(EXIT_FAILURE);
+//    if(freenect_open_device(m_ctx, &m_dev[0], m_userDeviceNumber) < 0){
+//        qDebug()<<"Não foi possivel abrir o dispositivo";
+//       // exit(EXIT_FAILURE);
 
-    } else {
+//    } else {
         freenect_list_device_attributes(m_ctx, &attribute_list);
+        for(int i = 0 ; i = m_userDeviceNumber; i++){
+            if (i == m_userDeviceNumber){
+                 return attribute_list->next->camera_serial;
+            }
+        }
 
         return  attribute_list->camera_serial;
-    }
+//    }
 
-    return "Error";
+//    return "Error";
 
 }
 
@@ -195,6 +219,9 @@ void QKinectSensor::startVideo(int index)
     {
         throw std::runtime_error("Cannot start RGB callback");
     }
+    qDebug() <<  QString::fromStdString(return_current_time_and_date())  << " -> Start Video"  ;
+
+
 }
 
 void QKinectSensor::stopVideo(int index)
@@ -203,6 +230,8 @@ void QKinectSensor::stopVideo(int index)
     {
         throw std::runtime_error("Cannot stop RGB callback");
     }
+    qDebug() <<  QString::fromStdString(return_current_time_and_date()) << " -> Stop Video" ;
+
 }
 void QKinectSensor::startDepth(int index)
 {
@@ -210,6 +239,7 @@ void QKinectSensor::startDepth(int index)
     {
         throw std::runtime_error("Cannot start depth callback");
     }
+    qDebug() <<  QString::fromStdString(return_current_time_and_date())  << " -> Start Depth"  ;
 }
 
 void QKinectSensor::stopDepth(int index)
@@ -218,6 +248,8 @@ void QKinectSensor::stopDepth(int index)
     {
         throw std::runtime_error("Cannot stop depth callback");
     }
+
+    qDebug() <<  QString::fromStdString(return_current_time_and_date())  << " -> Start Depth"  ;
 }
 
 void QKinectSensor::grabVideo(void *_video,uint32_t _timestamp)

@@ -30,6 +30,7 @@
 #include "qkinectsensor.h"
 #include <fstream>
 #include <sstream>
+#include<QImage>
 
 //----------------------------------------------------------------------------------------------------------------------
 RGBWindow::RGBWindow(QWidget *_parent ) : QGLWidget(_parent)
@@ -171,18 +172,43 @@ RGBWindow::~RGBWindow()
 
 void RGBWindow::saveXYZ(){
 
+    const int width = 640;
+    const int height = 480;
+
+    std::vector<uint16_t> m_depth_temp;
+    m_depth_temp = m_depth;
+
+    const char* serialNumber;
+
+     QKinectSensor *kinect= QKinectSensor::instace();
+     serialNumber = kinect->getSerialNumber();
+     std::string return_current_time_and_date();
 
 
-    std::ofstream myfile ("saveRGB" + std::to_string(count) + ".txt");
+//    // Create new image with the same dimensions.
+//    QImage img(width, height, QImage::Format_RGB16);
+//    // Set the pixel colors from the vector.
+//    for (int row = 0; row < height; row++) {
+//        for (int col = 0; col < width; col++) {
+//            img.setPixel(row, col, m_rgb[row * width + col]);
+//        }
+//    }
+//    // Save the resulting image.
+//    img.save("test.png");
+
+
+
+
+    std::ofstream myfile ("capturas/pointsKinect" +  std::string(serialNumber) + "_" + return_current_time_and_date() + ".xyz");
     if (myfile.is_open()){
     for (int i = 0; i < 480*640; ++i)
        {
 
            float f = 595.f;
            // Convert from image plane coordinates to world coordinates
-           int x = (i%640 - (640-1)/2.f) * m_depth[i] / f;  // X = (x - cx) * d / fx
-           int y = (i/640 - (480-1)/2.f) * m_depth[i] / f;  // Y = (y - cy) * d / fy
-           int z = m_depth[i];                            // Z = d
+           int x = (i%640 - (640-1)/2.f) * m_depth_temp[i] / f;  // X = (x - cx) * d / fx
+           int y = (i/640 - (480-1)/2.f) * m_depth_temp[i] / f;  // Y = (y - cy) * d / fy
+           int z = m_depth_temp[i];                            // Z = d
         myfile << x << " " << y << " " << z << "\n" ;
     }
     myfile.close();
