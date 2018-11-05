@@ -56,6 +56,7 @@ public slots:
     void stopDepth(int index);
     void startVideo(int index);
     void stopVideo(int index);
+    void setAngle(int index , double _angle);
 
 private:
 

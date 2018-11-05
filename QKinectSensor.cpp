@@ -331,6 +331,21 @@ uint16_t* depth = static_cast<uint16_t*>(_depth);
 //m_newDepthFrame = true;
 }
 
+void QKinectSensor::setAngle(int index, double _angle)
+{
+    // constrain the angle from -30 - +30
+    if(_angle > 30)
+    {
+        _angle = 30;
+    }
+    else if(_angle <-30)
+    {
+        _angle=-30;
+    }
+    freenect_set_tilt_degs(m_dev[index],_angle);
+}
+
+
 
 void QKinectProcessEvents::run()
 {

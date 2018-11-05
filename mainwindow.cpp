@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     m_kinect = QKinectSensor::instace();
+    m_realSense->init();
     auto start = std::chrono::system_clock::now();
 
 
@@ -42,11 +43,11 @@ MainWindow::MainWindow(QWidget *parent) :
     boxDeviceDepth->addItem("Nenhum", -1);
 
 
-
-    int n_devices = m_kinect->getNumberDevices();
-    //int n_devices = 3;
+   fToolbar = new QToolBar("Dispositivos detectados", this);
+    //int n_devices = m_kinect->getNumberDevices();
+    int n_devices = 3;
     for (int i = 0; i < n_devices ; i++){
-        fToolbar = new QToolBar("Device Control", this);
+
         fToolbar->setObjectName("Teste");
         QLabel *label = new QLabel(fToolbar);
         label -> setText("Kinect " + QString::number(i+1));
@@ -75,7 +76,13 @@ MainWindow::MainWindow(QWidget *parent) :
         label-> setAlignment(Qt::AlignLeft);
         fToolbar->addWidget(label);
 
+        QDoubleSpinBox *angle = new QDoubleSpinBox(this);
+        angle->setMaximum(30.0);
+        angle->setMinimum(-30.0);
+        angle->setSingleStep(1.0);
+        QObject::connect(angle,SIGNAL(valueChanged(double)),m_kinect,SLOT(setAngle(double)));
 
+        fToolbar->addWidget(angle);
         fToolbar->addSeparator();
 
 
@@ -87,33 +94,25 @@ MainWindow::MainWindow(QWidget *parent) :
 //        fToolbar->addWidget(rgbMode);
         //fToolbar->addSeparator();
 
-
-
-
         boxDevice->addItem("Kinect " + QString::number(i+1), i);
         boxDeviceDepth->addItem("Kinect " + QString::number(i+1), i);
 
         this -> addToolBar(Qt::LeftToolBarArea,fToolbar);
-
-
     }
 
-   fToolbar = new QToolBar("Device Control", this);
+    bToolbar = new QToolBar("Device Control", this);
 
     QLabel *label = new QLabel(fToolbar);
     label -> setText("Visualizar");
     label-> setAlignment(Qt::AlignLeft);
-    fToolbar->addWidget(label);
-    fToolbar->addWidget(boxDevice);
+    bToolbar->addWidget(label);
+    bToolbar->addWidget(boxDevice);
     connect(boxDevice, SIGNAL(currentIndexChanged(int)),
             this, SLOT(changeStatus(int)));
 
-    fToolbar->addSeparator();
+    bToolbar->addSeparator();
 
-    this -> addToolBar(Qt::LeftToolBarArea,fToolbar);
-
-
-
+    this -> addToolBar(Qt::RightToolBarArea,bToolbar);
 
 //    fToolbar = new QToolBar("Device Control", this);
 //     label = new QLabel(fToolbar);
@@ -125,20 +124,21 @@ MainWindow::MainWindow(QWidget *parent) :
 //             this, SLOT(changeStatus(int)));
 //     fToolbar->addSeparator();
 
-
-
-
-
-    capture = new QPushButton("Capture");
+    capture = new QPushButton("Capture Kinect");
     capture->setEnabled(0);
     connect(capture, SIGNAL(clicked()),this,SLOT(saveXYZKinect()));
 
-    fToolbar->addWidget(capture);
-    this -> addToolBar(Qt::LeftToolBarArea,fToolbar);
+    bToolbar->addWidget(capture);
+    bToolbar->addSeparator();
+    this -> addToolBar(Qt::RightToolBarArea,bToolbar);
 
+    QPushButton* captureRealSense = new QPushButton("Capture Realsense");
+    captureRealSense->setEnabled(0);
+    connect(captureRealSense, SIGNAL(clicked()),this,SLOT(saveXYZKinect()));
 
-
-
+    bToolbar->addWidget(captureRealSense);
+    bToolbar->addSeparator();
+    this -> addToolBar(Qt::RightToolBarArea,bToolbar);
 
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -150,14 +150,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-    QString message = tr("A context menu is available by right-clicking");
+    QString message = tr("Pronto para iniciar");
     statusBar()->showMessage(message);
 
 
 
     setWindowTitle(tr("Aquisiction3D"));
     setMinimumSize(160, 160);
-    resize(480, 320);
+    resize(640, 480);
 
     //Menu
     createActions();

@@ -13,6 +13,7 @@
 #include <QMenuBar>
 #include <QStatusBar>
 #include "qkinectsensor.h"
+#include "qrealsense.h"
 #include <QMdiArea>
 #include "rgbwindow.h"
 
@@ -70,10 +71,12 @@ private:
     QAction *aboutQtAct;
     QLabel *infoLabel;
     QKinectSensor *m_kinect;
+    QRealsense *m_realSense;
     QMdiArea *m_mdiArea;
     RGBWindow *m_rgb;
     RGBWindow *m_depth;
     QToolBar *fToolbar;
+    QToolBar *bToolbar;
     QComboBox *boxDevice;
     QComboBox *boxDeviceDepth;
     int indexDeviceAnterior = -1;
