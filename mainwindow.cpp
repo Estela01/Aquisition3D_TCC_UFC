@@ -44,8 +44,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
    fToolbar = new QToolBar("Dispositivos detectados", this);
-    //int n_devices = m_kinect->getNumberDevices();
-    int n_devices = 3;
+    int n_devices = m_kinect->getNumberDevices();
+    //int n_devices = 3;
     for (int i = 0; i < n_devices ; i++){
 
         fToolbar->setObjectName("Teste");
@@ -133,8 +133,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this -> addToolBar(Qt::RightToolBarArea,bToolbar);
 
     QPushButton* captureRealSense = new QPushButton("Capture Realsense");
-    captureRealSense->setEnabled(0);
-    connect(captureRealSense, SIGNAL(clicked()),this,SLOT(saveXYZKinect()));
+    captureRealSense->setEnabled(1);
+    connect(captureRealSense, SIGNAL(clicked()),this,SLOT(saveXYZRealsense()));
 
     bToolbar->addWidget(captureRealSense);
     bToolbar->addSeparator();
@@ -354,4 +354,8 @@ void MainWindow::changeStatus(int index){
 
 void MainWindow::saveXYZKinect(){
     m_depth->saveXYZ();
+}
+
+void MainWindow::saveXYZRealsense(){
+    m_realSense -> getSnapshot();
 }

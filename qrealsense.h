@@ -2,6 +2,9 @@
 #define QREALSENSE_H
 #include <librealsense2/rs.hpp>
 #include <QDebug>
+#include <QMutex>
+#include <QMutexLocker>
+
 
 using namespace rs2;
 
@@ -12,7 +15,11 @@ public:
     void init();
     rs2::device dev;
 
+public slots:
+    void getSnapshot();
+
 private:
+     QMutex m_mutex;
 
 };
 

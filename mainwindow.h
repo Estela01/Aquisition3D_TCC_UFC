@@ -88,6 +88,7 @@ public slots:
     void showSerialNumber();
     void changeStatus(int index);
     void saveXYZKinect();
+    void saveXYZRealsense();
 
 
 signals:
