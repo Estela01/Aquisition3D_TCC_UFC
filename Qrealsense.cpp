@@ -58,7 +58,7 @@ void QRealsense::getSnapshot(){
     std::string endPly;
     endPly.append(end);
     endPly.append( "pointsRealsense_" + return_current_time_and_date() + ".ply");
-    points.export_to_ply(endPly,frames);
+    points.export_to_ply(endPly,color);
 
 
 //    std::stringstream ss;

@@ -49,11 +49,12 @@ HEADERS += \
 INCLUDEPATH+=./include \
 /usr/local/include/libfreenect \
 /usr/local/include
+INCLUDEPATH += /usr/local/include/librealsense
 
 INCLUDEPATH += /usr/include/pcl-1.8
 
 LIBS += -L/usr/local/lib/ -lfreenect
-
+LIBS += -lrealsense2
 
 
 
