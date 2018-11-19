@@ -16,6 +16,7 @@
 #include "qrealsense.h"
 #include <QMdiArea>
 #include "rgbwindow.h"
+#include <QMutexLocker>
 
 
 
@@ -38,6 +39,7 @@ protected:
     void createMenus();
     void createRGBWindow();
     void createRGBWindowForDevice(int indexDevice);
+    void createDockWindows();
 
 
 
@@ -74,13 +76,18 @@ private:
     QRealsense *m_realSense;
     QMdiArea *m_mdiArea;
     RGBWindow *m_rgb;
-    RGBWindow *m_depth;
+    RGBWindow *w_depth;
     QToolBar *fToolbar;
     QToolBar *bToolbar;
+    QToolBar *cToolbar;
     QComboBox *boxDevice;
+    QComboBox *boxExpression;
+    QComboBox *boxEtapa;
     QComboBox *boxDeviceDepth;
     int indexDeviceAnterior = -1;
-     QPushButton *capture;
+    QPushButton *capture;
+    QLineEdit *indTextInput;
+
 
 public slots:
     void newFile();
@@ -89,6 +96,8 @@ public slots:
     void changeStatus(int index);
     void saveXYZKinect();
     void saveXYZRealsense();
+    void teste();
+    void teste2(QString str);
 
 
 signals:

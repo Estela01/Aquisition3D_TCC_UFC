@@ -13,6 +13,7 @@
 #include "libfreenect.h"
 #include <QDebug>
 #include <libfreenect_registration.h>
+#include <QDir>
 
 
 class QKinectProcessEvents : public QThread
@@ -42,7 +43,7 @@ public:
 //    QKinectSensor();
     static QKinectSensor* instace();
     int getNumberDevices();
-    const char* getSerialNumber();
+    const char* getSerialNumber(int index);
     void setDeviceToShowRGB(int index);
 
     std::vector<freenect_device*> m_dev;

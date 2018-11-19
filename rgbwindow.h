@@ -60,7 +60,7 @@ public :
  inline void setIndexDevice(
             int _d
            ){m_devIndex=_d;}
- void saveXYZ();
+ void saveXYZ(QString path);
 
 
 private :

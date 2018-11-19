@@ -115,8 +115,7 @@ void RGBWindow::paintGL()
             glTexCoord2f(0, 1); glVertex3f(0,480,0);
         glEnd();
 
-    }
-    else if(m_mode == 1)
+    }else if(m_mode == 1)
     {
         kinect->getDepth(m_depth);
         count++;
@@ -170,7 +169,7 @@ RGBWindow::~RGBWindow()
 
 }
 
-void RGBWindow::saveXYZ(){
+void RGBWindow::saveXYZ(QString path){
 
     const int width = 640;
     const int height = 480;
@@ -178,10 +177,13 @@ void RGBWindow::saveXYZ(){
     std::vector<uint16_t> m_depth_temp;
     m_depth_temp = m_depth;
 
+//    std::vector<uint16_t> m_rgb_temp;
+//    m_rgb_temp = m_rgb;
+
     const char* serialNumber;
 
      QKinectSensor *kinect= QKinectSensor::instace();
-     serialNumber = kinect->getSerialNumber();
+     serialNumber = kinect->getSerialNumber(m_devIndex);
      std::string return_current_time_and_date();
 
 
@@ -196,25 +198,31 @@ void RGBWindow::saveXYZ(){
 //    // Save the resulting image.
 //    img.save("test.png");
 
+     QDir dir(path);
+     if (!dir.exists()){
+          dir.mkpath(".");
+     }
+     std::ofstream myfile ( path.toUtf8().constData() + std::string(serialNumber) +  std::string("_") + return_current_time_and_date() +  std::string(".xyz"));
+     if (myfile.is_open()){
+
+     for (int i = 0; i < 640; i++){
+         for (int j = 0; j < 480; j++){
+           int offset = i + j * 640;
+           float d = m_depth_temp[offset];
+           static const double fx = 572.882768;
+           static const double fy = 542.739980;
+           static const double cx = 314.649173;
+           static const double cy = 240.160459;
+
+           float z = (d) / (1.0f);
+           float x = (i - cx) * z / fx;  // X = (x - cx) * d / fx
+           float y = (j - cy) * z / fy;  // Y = (y - cy) * d / fy
+           myfile << x/1000 << " " << y/1000 << " " << z/1000 << "\n" ;
+     }
+             }
+     myfile.close();
+     } else std::cout << "Unable to open file";
 
 
 
-    std::ofstream myfile ("capturas/pointsKinect" +  std::string(serialNumber) + "_" + return_current_time_and_date() + ".xyz");
-    if (myfile.is_open()){
-    for (int i = 0; i < 480*640; ++i)
-       {
-
-           float f = 595.f;
-           // Convert from image plane coordinates to world coordinates
-           int x = (i%640 - (640-1)/2.f) * m_depth_temp[i] / f;  // X = (x - cx) * d / fx
-           int y = (i/640 - (480-1)/2.f) * m_depth_temp[i] / f;  // Y = (y - cy) * d / fy
-           int z = m_depth_temp[i];                            // Z = d
-        myfile << x << " " << y << " " << z << "\n" ;
-    }
-    myfile.close();
-    } else std::cout << "Unable to open file";
-
-    count++;
 }
-
-
