@@ -31,6 +31,7 @@
 #include <fstream>
 #include <sstream>
 #include<QImage>
+#include <opencv/cv.h>
 
 //----------------------------------------------------------------------------------------------------------------------
 RGBWindow::RGBWindow(QWidget *_parent ) : QGLWidget(_parent)
@@ -95,12 +96,11 @@ void RGBWindow::paintGL()
     // see my other NGL versions which are much faster
 
     QKinectSensor *kinect= QKinectSensor::instace();
+
+    kinect->getRGB(m_rgb);
     if(m_mode ==0)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        kinect->getRGB(m_rgb);
-
         glBindTexture(GL_TEXTURE_2D, m_rgbTexture);
         glTexImage2D(GL_TEXTURE_2D, 0, 3, 640, 480, 0, GL_RGB, GL_UNSIGNED_BYTE, &m_rgb[0]);
         glLoadIdentity();
@@ -177,32 +177,24 @@ void RGBWindow::saveXYZ(QString path){
     std::vector<uint16_t> m_depth_temp;
     m_depth_temp = m_depth;
 
-//    std::vector<uint16_t> m_rgb_temp;
-//    m_rgb_temp = m_rgb;
+    std::vector<uint8_t> m_rgb_temp;
+    m_rgb_temp = m_rgb;
 
-    const char* serialNumber;
 
      QKinectSensor *kinect= QKinectSensor::instace();
-     serialNumber = kinect->getSerialNumber(m_devIndex);
-     std::string return_current_time_and_date();
+     auto serialNumber = kinect->getSerialNumber(m_devIndex);
+     auto dateTime = kinect->date();
+    // std::string return_current_time_and_date();
 
 
-//    // Create new image with the same dimensions.
-//    QImage img(width, height, QImage::Format_RGB16);
-//    // Set the pixel colors from the vector.
-//    for (int row = 0; row < height; row++) {
-//        for (int col = 0; col < width; col++) {
-//            img.setPixel(row, col, m_rgb[row * width + col]);
-//        }
-//    }
-//    // Save the resulting image.
-//    img.save("test.png");
 
-     QDir dir(path);
-     if (!dir.exists()){
-          dir.mkpath(".");
-     }
-     std::ofstream myfile ( path.toUtf8().constData() + std::string(serialNumber) +  std::string("_") + return_current_time_and_date() +  std::string(".xyz"));
+
+     std::string str =  path.toUtf8().constData() + std::string("/") + std::string(serialNumber) + dateTime.c_str() + ".jpg";
+
+     QImage image(m_rgb_temp.data(), 640, 480, QImage::Format_RGB888);
+     image.save(str.c_str());
+
+     std::ofstream myfile ( path.toUtf8().constData() + std::string("/") + std::string(serialNumber) + dateTime.c_str() + ".xyz");
      if (myfile.is_open()){
 
      for (int i = 0; i < 640; i++){
@@ -218,11 +210,12 @@ void RGBWindow::saveXYZ(QString path){
            float x = (i - cx) * z / fx;  // X = (x - cx) * d / fx
            float y = (j - cy) * z / fy;  // Y = (y - cy) * d / fy
            myfile << x/1000 << " " << y/1000 << " " << z/1000 << "\n" ;
+         }
      }
-             }
+
      myfile.close();
      } else std::cout << "Unable to open file";
 
-
+     qDebug() << "File saved";
 
 }

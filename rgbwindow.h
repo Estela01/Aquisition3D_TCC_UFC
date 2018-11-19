@@ -30,6 +30,7 @@
 #include <QtOpenGL>
 #include <QTime>
 #include <QTime>
+#include <boost/filesystem.hpp>
 /// @file RGBWindow.h
 /// @brief a basic Qt GL window class for ngl demos
 /// @author Jonathan Macey

@@ -22,6 +22,7 @@ public :
     inline QKinectProcessEvents(freenect_context *_ctx ){m_ctx=_ctx;}
     inline void setActive(){m_active=true;}
     inline void setInActive(){m_active=false;}
+
 protected :
     void run();
 
@@ -45,7 +46,7 @@ public:
     int getNumberDevices();
     const char* getSerialNumber(int index);
     void setDeviceToShowRGB(int index);
-
+    std::string  date();
     std::vector<freenect_device*> m_dev;
 
 

@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     initKinect();
     m_realSense->init();
-    auto start = std::chrono::system_clock::now();
+//    auto start = std::chrono::system_clock::now();
 
     //Toolbar e Elementos
     QWidget *widget = new QWidget();
@@ -55,13 +55,8 @@ MainWindow::MainWindow(QWidget *parent) :
         label-> setAlignment(Qt::AlignLeft);
         fToolbar->addWidget(label);
 
-//        label = new QLabel(fToolbar);
-//        label -> setText("Modelo: ");
-//        label-> setAlignment(Qt::AlignLeft);
-//        fToolbar->addWidget(label);
-
         label = new QLabel(fToolbar);
-        label -> setText("Ângulo: ");
+        label -> setText("Angulo: ");
         label-> setAlignment(Qt::AlignLeft);
         fToolbar->addWidget(label);
 
@@ -92,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent) :
     cToolbar->addSeparator();
 
     QLabel *indLabel = new QLabel(fToolbar);
-    indLabel -> setText("Indivíduo:" );
+    indLabel -> setText("Individuo:" );
     indLabel->setAlignment(Qt::AlignLeft);
     cToolbar->addWidget(indLabel);
 
@@ -102,13 +97,13 @@ MainWindow::MainWindow(QWidget *parent) :
     cToolbar->addWidget(indTextInput);
 
     QLabel *expLabel = new QLabel(fToolbar);
-    expLabel -> setText("Expressão:" );
+    expLabel -> setText("Expressao:" );
     expLabel->setAlignment(Qt::AlignLeft);
     cToolbar->addWidget(expLabel);
 
     boxExpression= new QComboBox();
     boxExpression->addItem("Nenhum", -1);
-    boxExpression->addItem("Neutra", 0);
+    boxExpression->addItem("Neutro", 0);
     boxExpression->addItem("Alegria", 1);
     boxExpression->addItem("Tristeza", 2);
     boxExpression->addItem("Surpresa", 3);
@@ -169,7 +164,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setWindowTitle(tr("Aquisiction3D"));
     setMinimumSize(160, 160);
-    resize(640, 480);
+    resize(720, 512);
 
     //Menu
     createActions();
@@ -265,6 +260,7 @@ void MainWindow::createRGBWindowForDevice(int indexDevice){
 
         w_depth= new RGBWindow(this);
         w_depth->setMode(1);
+        w_depth->setIndexDevice(indexDevice - 1);
         QMdiSubWindow *subWindow2 = new QMdiSubWindow;
         subWindow2->setWidget(w_depth);
         subWindow2->setAttribute(Qt::WA_DeleteOnClose);
@@ -323,6 +319,7 @@ void MainWindow::changeStatus(int index){
         statusBar()->showMessage("Visualizando RGB do kinect" + QString::number(index));
         createRGBWindowForDevice(index);
 
+
     }if(index == 0){
 
         m_mdiArea->closeAllSubWindows();
@@ -339,13 +336,12 @@ void MainWindow::saveXYZKinect(){
 
     qDebug()<<textEditText << boxText << etapa;
 
-    QString path = "./capturas/" + textEditText + "/" + boxText + "/" + etapa + "/Kinect/";
+    QString path = "./capturas/" + textEditText + "/" + boxText  + "/" + etapa + "/Kinect";
 
     QDir dir(path);
     if (!dir.exists()){
-         dir.mkpath(".");
+         dir.mkpath(path);
     }
-
     w_depth->saveXYZ(path);
 }
 
@@ -358,9 +354,10 @@ void MainWindow::saveXYZRealsense(){
     qDebug()<<textEditText << boxText << etapa;
 
     QString path = "./capturas/" + textEditText + "/" + boxText  + "/" + etapa + "/Realsense/";
+
     QDir dir(path);
     if (!dir.exists()){
-         dir.mkpath(".");
+         dir.mkpath(path);
     }
 
     m_realSense -> getSnapshot(path);

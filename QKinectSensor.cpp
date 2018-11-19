@@ -20,6 +20,18 @@
 
 
 
+std::string  QKinectSensor::date()
+{
+    auto now = std::chrono::system_clock::now();
+    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+//   qDebug()<< ss.str().c_str();
+    return ss.str();
+}
+
+
 std::string return_current_time_and_date()
 {
     auto now = std::chrono::system_clock::now();
@@ -60,10 +72,11 @@ const char* QKinectSensor::getSerialNumber(int index){
     freenect_device_attributes *p;
     int i = 0;
     for(p = attribute_list; p!=NULL ; p = p->next){
+
         if(i == index){
             return p->camera_serial;
         }
-        i++;
+       i++;
     }
 }
 
@@ -210,7 +223,10 @@ void QKinectSensor::startVideo(int index)
     {
         throw std::runtime_error("Cannot start RGB callback");
     }
-    qDebug() <<  QString::fromStdString(return_current_time_and_date())  << " -> Start Video"  ;
+
+    auto dateTime = date();
+
+    qDebug() << dateTime.c_str() << " -> Start Video"  ;
 
 
 }
@@ -221,7 +237,9 @@ void QKinectSensor::stopVideo(int index)
     {
         throw std::runtime_error("Cannot stop RGB callback");
     }
-    qDebug() <<  QString::fromStdString(return_current_time_and_date()) << " -> Stop Video" ;
+    auto dateTime = date();
+
+    qDebug() << dateTime.c_str() <<  " -> Stop Video" ;
 
 }
 void QKinectSensor::startDepth(int index)
@@ -230,7 +248,9 @@ void QKinectSensor::startDepth(int index)
     {
         throw std::runtime_error("Cannot start depth callback");
     }
-    qDebug() <<  QString::fromStdString(return_current_time_and_date())  << " -> Start Depth"  ;
+    auto dateTime = date();
+
+    qDebug() << dateTime.c_str() <<  " -> Start Depth"  ;
 }
 
 void QKinectSensor::stopDepth(int index)
@@ -240,7 +260,9 @@ void QKinectSensor::stopDepth(int index)
         throw std::runtime_error("Cannot stop depth callback");
     }
 
-    qDebug() <<  QString::fromStdString(return_current_time_and_date())  << " -> Start Depth"  ;
+    auto dateTime = date();
+
+    qDebug() << dateTime.c_str() <<  " -> Start Depth"  ;
 }
 
 void QKinectSensor::grabVideo(void *_video,uint32_t _timestamp)
