@@ -54,26 +54,17 @@ int QKinectSensor::getNumberDevices(){
     return nr_devices;
 }
 
-const char* QKinectSensor::getSerialNumber(){
+const char* QKinectSensor::getSerialNumber(int index){
 
-
-//    if(freenect_open_device(m_ctx, &m_dev[0], m_userDeviceNumber) < 0){
-//        qDebug()<<"Não foi possivel abrir o dispositivo";
-//       // exit(EXIT_FAILURE);
-
-//    } else {
-        freenect_list_device_attributes(m_ctx, &attribute_list);
-        for(int i = 0 ; i = m_userDeviceNumber; i++){
-            if (i == m_userDeviceNumber){
-                 return attribute_list->next->camera_serial;
-            }
+    freenect_list_device_attributes(m_ctx, &attribute_list);
+    freenect_device_attributes *p;
+    int i = 0;
+    for(p = attribute_list; p!=NULL ; p = p->next){
+        if(i == index){
+            return p->camera_serial;
         }
-
-        return  attribute_list->camera_serial;
-//    }
-
-//    return "Error";
-
+        i++;
+    }
 }
 
 
