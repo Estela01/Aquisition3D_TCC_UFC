@@ -13,6 +13,7 @@
 #include <iomanip> // put_time
 #include <string>  // string
 #include <iostream>
+#include "ofxkinectextras.h"
 #define FREENECT_FRAME_H 480
 #define FREENECT_FRAME_W 640
 #define FREENECT_FRAME_PIX (FREENECT_FRAME_H * FREENECT_FRAME_W)
@@ -74,6 +75,10 @@ void QKinectSensor::init(){
         exit(EXIT_FAILURE);
     }
     freenect_set_log_level(m_ctx,FREENECT_LOG_DEBUG);
+
+    freenect_set_fw_address_nui(m_ctx, ofxKinectExtras::getFWData1473(), ofxKinectExtras::getFWSize1473());
+    freenect_set_fw_address_k4w(m_ctx, ofxKinectExtras::getFWDatak4w(), ofxKinectExtras::getFWSizek4w());
+
 
 
     int nr_devices = freenect_num_devices (m_ctx);

@@ -184,7 +184,7 @@ void RGBWindow::saveXYZ(QString path){
 
      QKinectSensor *kinect= QKinectSensor::instace();
      serialNumber = kinect->getSerialNumber(m_devIndex);
-     std::string return_current_time_and_date();
+     std::string return_current_time_and_date;
 
 
 //    // Create new image with the same dimensions.
@@ -202,7 +202,7 @@ void RGBWindow::saveXYZ(QString path){
      if (!dir.exists()){
           dir.mkpath(".");
      }
-     std::ofstream myfile ( path.toUtf8().constData() + std::string(serialNumber) +  std::string("_") + return_current_time_and_date() +  std::string(".xyz"));
+     std::ofstream myfile ( path.toUtf8().constData() + std::string(serialNumber) +  std::string("_") + return_current_time_and_date +  std::string(".xyz"));
      if (myfile.is_open()){
 
      for (int i = 0; i < 640; i++){
@@ -218,11 +218,10 @@ void RGBWindow::saveXYZ(QString path){
            float x = (i - cx) * z / fx;  // X = (x - cx) * d / fx
            float y = (j - cy) * z / fy;  // Y = (y - cy) * d / fy
            myfile << x/1000 << " " << y/1000 << " " << z/1000 << "\n" ;
+        }
      }
-             }
      myfile.close();
+     std::cout << "File Saved";
      } else std::cout << "Unable to open file";
-
-
 
 }

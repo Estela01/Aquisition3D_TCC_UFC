@@ -2,6 +2,8 @@
 #define QREALSENSE_H
 #include <librealsense2/rs.hpp>
 #include <librealsense2/rsutil.h>
+#include <librealsense2/rs_frame.hpp>
+
 #include <QDebug>
 #include <QMutex>
 #include <QMutexLocker>

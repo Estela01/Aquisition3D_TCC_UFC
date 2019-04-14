@@ -161,6 +161,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     cToolbar->addWidget(capture);
 
+    QPushButton *teste = new QPushButton("Sound Alert");
+    connect(teste, SIGNAL(clicked()),this,SLOT(teste()));
+
+    cToolbar->addWidget(teste);
+
     cToolbar->addSeparator();
     this -> addToolBar(Qt::RightToolBarArea,cToolbar);
 
@@ -371,11 +376,13 @@ void MainWindow::teste(){
  QString boxText =  boxExpression->currentText();
  QString etapa = boxEtapa->currentText();
 
- qDebug()<<textEditText << boxText << etapa;
+// qDebug()<<textEditText << boxText << etapa;
 
- QDir dir("./capturas/" + textEditText + "/" + boxText);
- if (!dir.exists())
-     dir.mkpath(".");
+// QDir dir("./capturas/" + textEditText + "/" + boxText);
+// if (!dir.exists())
+//     dir.mkpath(".");
+
+ std::cout << "\007";
 
 }
 

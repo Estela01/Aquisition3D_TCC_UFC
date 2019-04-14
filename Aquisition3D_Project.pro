@@ -38,22 +38,26 @@ SOURCES += \
         mainwindow.cpp \
     Qrealsense.cpp \
     QKinectSensor.cpp \
-    rgbwindow.cpp
+    rgbwindow.cpp \
+    ofxkinectextras.cpp
 
 HEADERS += \
         mainwindow.h \
     qrealsense.h \
     qkinectsensor.h \
-    rgbwindow.h
+    rgbwindow.h \
+    stb_image_write.h \
+    ofxkinectextras.h
 
 INCLUDEPATH+=./include \
 /usr/local/include/libfreenect \
 /usr/local/include
+INCLUDEPATH += /usr/local/include/librealsense2
 
 INCLUDEPATH += /usr/include/pcl-1.8
 
 LIBS += -L/usr/local/lib/ -lfreenect
-
+LIBS += -lrealsense2
 
 
 
